@@ -6,6 +6,8 @@
 #
 import numpy as np
 
+import datkit
+
 
 def index(times, t, ttol=1e-9):
     """
@@ -47,22 +49,21 @@ def index_near(times, t):
     """
     # Check t is within range
     if t < times[0]:
-        dt = sampling_interval(times)
-        if 2 * (t - times[0]) < dt:
+        dt = datkit.sampling_interval(times)
+        if 2 * (times[0] - t) < dt:
             return 0
         raise ValueError(
             f'Time t is too far outside the provided range: {t} < {times[0]}')
     elif t > times[-1]:
-        dt = sampling_interval(times)
-        if 2 * (times[-1] - t) < dt:
+        dt = datkit.sampling_interval(times)
+        if 2 * (t - times[-1]) < dt:
             return len(times) - 1
         raise ValueError(
             f'Time t is too far outside the provided range: {t} > {times[-1]}')
 
     # Find index and return
-    if lpad is None and rpad is None:
-        i = np.searchsorted(times, t)   # times[i - 1] < t <= times[i]
-        return i if i == 0 or times[i] - t < t - times[i - 1] else i - 1
+    i = np.searchsorted(times, t)   # times[i - 1] < t <= times[i]
+    return i if i == 0 or times[i] - t < t - times[i - 1] else i - 1
 
 
 def index_on(times, t0, t1, include_left=True, include_right=False):
@@ -76,10 +77,17 @@ def index_on(times, t0, t1, include_left=True, include_right=False):
     If any of the points are outside of range, the interval returned will be
     smaller or even empty.
     """
-    if t1 <= t0:
-        raise ValueError('Time t1 must be greater than t0.')
+    if len(times) < 1:
+        raise ValueError('Times must contain at least one value.')
+    if t1 < t0:
+        raise ValueError('Time t1 must be greater than or equal to t0.')
     i = np.searchsorted(times, t0)
-    j = np.searchsorted(times, t1, side='right')
+    j = np.searchsorted(times, t1)
+    if (not include_left) and i < len(times) and times[i] == t0:
+        i += 1
+    if include_right and j < len(times) and times[j] == t1:
+        j += 1
+    return i, j
 
 
 def mean_on(times, values, t0, t1, include_left=True, include_right=False):
@@ -89,7 +97,7 @@ def mean_on(times, values, t0, t1, include_left=True, include_right=False):
     By default, the interval is taken as ``t0 <= times < t1``, but this can be
     customized using ``include_left`` and ``include_right``.
     """
-    i, j = index_interval(times, t0, t1, include_left, include_right)
+    i, j = index_on(times, t0, t1, include_left, include_right)
     return np.mean(values[i:j])
 
 

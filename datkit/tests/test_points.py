@@ -77,6 +77,110 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.index(times, 7.3 + 9e-10), 49)
         self.assertRaisesRegex(ValueError, 'range', d.index, times, 7.3 + 2e-9)
 
+    def test_index_near(self):
+
+        # Exact matches
+        times = np.arange(0, 10)
+        self.assertEqual(d.index_near(times, 0), 0)
+        self.assertEqual(d.index_near(times, 4), 4)
+        self.assertEqual(d.index_near(times, 9), 9)
+
+        # Near matches
+        self.assertEqual(d.index_near(times, 0.1), 0)
+        self.assertEqual(d.index_near(times, 2.1), 2)
+        self.assertEqual(d.index_near(times, 3.5), 3)
+
+        # Outside of range
+        times = np.arange(0, 20) / 2
+        self.assertEqual(d.index_near(times, -0.1), 0)
+        self.assertEqual(d.index_near(times, -0.24999), 0)
+        self.assertRaisesRegex(
+            ValueError, 'range', d.index_near, times, -0.251)
+        self.assertEqual(d.index_near(times, 9.6), 19)
+        self.assertEqual(d.index_near(times, 9.7499), 19)
+        self.assertRaisesRegex(ValueError, 'range', d.index_near, times, 9.751)
+
+    def test_index_on(self):
+        t = np.arange(0, 10)
+        self.assertEqual(d.index_on(t, 2, 4), (2, 4))
+        self.assertEqual(d.index_on(t, 2, 4.1), (2, 5))
+        self.assertEqual(d.index_on(t, 0.1, 5), (1, 5))
+        self.assertEqual(d.index_on(t, -5, 4), (0, 4))
+
+        self.assertEqual(d.index_on(t, 2, 4, include_left=False), (3, 4))
+        self.assertEqual(d.index_on(t, -5, 4, include_left=False), (0, 4))
+        self.assertEqual(d.index_on(t, 0, 4, include_left=False), (1, 4))
+        self.assertEqual(d.index_on(t, 2, 4, include_right=True), (2, 5))
+        self.assertEqual(d.index_on(t, 2, 3.9, include_right=True), (2, 4))
+        self.assertEqual(d.index_on(t, 2, 100), (2, 10))
+        self.assertEqual(d.index_on(t, 2, 100, include_right=True), (2, 10))
+
+        self.assertEqual(d.index_on(t, 3, 8, True, True), (3, 9))
+        self.assertEqual(d.index_on(t, 3, 8, False, True), (4, 9))
+        self.assertEqual(d.index_on(t, 3, 8, True, False), (3, 8))
+        self.assertEqual(d.index_on(t, 3, 8, False, False), (4, 8))
+
+        self.assertEqual(d.index_on(t, -3, 88, True, True), (0, 10))
+        self.assertEqual(d.index_on(t, -3, 88, False, True), (0, 10))
+        self.assertEqual(d.index_on(t, -3, 88, True, False), (0, 10))
+        self.assertEqual(d.index_on(t, -3, 88, False, False), (0, 10))
+
+        self.assertEqual(d.index_on(t, -9, -3, True, True), (0, 0))
+        self.assertEqual(d.index_on(t, -9, -3, False, True), (0, 0))
+        self.assertEqual(d.index_on(t, -9, -3, True, False), (0, 0))
+        self.assertEqual(d.index_on(t, -9, -3, False, False), (0, 0))
+
+        self.assertEqual(d.index_on(t, 12, 18, True, True), (10, 10))
+        self.assertEqual(d.index_on(t, 12, 18, False, True), (10, 10))
+        self.assertEqual(d.index_on(t, 12, 18, True, False), (10, 10))
+        self.assertEqual(d.index_on(t, 12, 18, False, False), (10, 10))
+
+        self.assertEqual(d.index_on(t, 0, 0), (0, 0))
+        self.assertEqual(d.index_on(t, 4, 4), (4, 4))
+        self.assertEqual(d.index_on(t, -4, -4), (0, 0))
+        self.assertEqual(d.index_on(t, 10, 10), (10, 10))
+        self.assertEqual(d.index_on(t, 12, 12), (10, 10))
+
+        self.assertRaisesRegex(
+            ValueError, 'at least one', d.index_on, [], 2, 4)
+        self.assertEqual(d.index_on([3], 2, 4), (0, 1))
+        self.assertEqual(d.index_on([3], 2, 3), (0, 0))
+        self.assertRaisesRegex(ValueError, 'greater than', d.index_on, t, 3, 2)
+
+        t = np.arange(4, 40, 2)
+        self.assertEqual(d.index_on(t, 8, 16), (2, 6))
+        t = np.arange(-6, 18, 3)
+        self.assertEqual(d.index_on(t, -3, 9), (1, 5))
+
+    def test_mean_on(self):
+        t = np.arange(1, 11)
+        print(t)
+        self.assertEqual(d.mean_on(t, t, 1, 11), 5.5)
+        self.assertEqual(d.mean_on(t, t, 4, 8), 5.5)
+        self.assertEqual(d.mean_on(t, t, 4, 8, False), 6)
+        self.assertEqual(d.mean_on(t, t, 4, 8, True, True), 6)
+
+    def test_value_at(self):
+        t = np.arange(0, 10)
+        self.assertEqual(d.value_at(t, t, 0), 0)
+        self.assertEqual(d.value_at(t, t, 5), 5)
+        self.assertEqual(d.value_at(t, t, 9), 9)
+        v = 20 + 2 * t
+        self.assertEqual(d.value_at(t, v, 0), 20)
+        self.assertEqual(d.value_at(t, v, 5), 30)
+
+    def test_value_near(self):
+        t = np.arange(0, 10)
+        self.assertEqual(d.value_near(t, t, 0), 0)
+        self.assertEqual(d.value_near(t, t, 5), 5)
+        self.assertEqual(d.value_near(t, t, 9), 9)
+        self.assertEqual(d.value_near(t, t, 0.1), 0)
+        self.assertEqual(d.value_near(t, t, 5.7), 6)
+        self.assertEqual(d.value_near(t, t, 8.9), 9)
+        v = 20 + 2 * t
+        self.assertEqual(d.value_at(t, v, 0), 20)
+        self.assertEqual(d.value_at(t, v, 5), 30)
+
 
 if __name__ == '__main__':
     unittest.main()
