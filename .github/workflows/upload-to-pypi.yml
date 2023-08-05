@@ -1,0 +1,36 @@
+name: Upload to PyPi
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+
+  upload-to-pypi:
+    name: Upload to Pypi
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install dependencies
+        run: |
+          python --version
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade twine
+
+      - name: create release binaries
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_token }}
