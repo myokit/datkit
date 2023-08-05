@@ -36,6 +36,6 @@ jobs:
 
       - name: Run unit tests
         run: |
-          coverage -m unittest
+          coverage run -m unittest
           coverage report -m --fail-under 100
 

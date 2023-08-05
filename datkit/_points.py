@@ -82,9 +82,6 @@ def index_on(times, t0, t1, include_left=True, include_right=False):
     j = np.searchsorted(times, t1, side='right')
 
 
-
-
-
 def mean_on(times, values, t0, t1, include_left=True, include_right=False):
     """
     Returns the mean of ``values`` on the interval from ``t0`` to ``t1``.
