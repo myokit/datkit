@@ -59,3 +59,9 @@ from ._points import (  # noqa
     value_near,
 )
 
+from ._smoothing import (  # noqa
+    haar_downsample,
+    gaussian_smoothing,
+    moving_average,
+    window_size,
+)
