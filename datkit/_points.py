@@ -135,6 +135,7 @@ def min_on(times, values, t0, t1, include_left=True, include_right=False):
     i = i + np.argmin(values[i:j])
     return times[i], values[i]
 
+
 def value_at(times, values, t, ttol=1e-9):
     """
     Returns the value at the given time point.
