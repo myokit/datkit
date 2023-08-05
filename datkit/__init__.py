@@ -42,10 +42,18 @@ del os, inspect
 #
 # Imports
 #
-
+from ._check_times import (  # noqa
+    is_increasing,
+    is_regularly_increasing,
+    sampling_interval,
+)
 
 from ._points import (  # noqa
     index,
+    index_near,
+    index_on,
+    mean_on,
     value_at,
+    value_near,
 )
 

@@ -80,7 +80,7 @@ setup(
             #'sphinx>=1.7.4',        # Doc generation
         ],
         'dev': [
-            #'coverage',             # Coverage checking
+            'coverage',             # Coverage checking
             'flake8>=3',            # Style checking
         ],
     },

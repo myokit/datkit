@@ -1,0 +1,17 @@
+[run]
+source = datkit
+omit =
+    datkit/tests/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    pragma: no linux cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    pass
+    except ImportError:
+    if False:
+    if __name__ == .__main__.:
+

@@ -17,3 +17,6 @@ env
 
 # Ignore vs code config
 .vscode
+
+# Local coverage report file
+.coverage
