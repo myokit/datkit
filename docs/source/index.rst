@@ -10,5 +10,6 @@ Some silly scripts to do stuff I do all the time.
 
     self
     finding_points
+    smoothing
     checking_time_vectors
 
