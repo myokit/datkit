@@ -2,7 +2,7 @@
 # Main module
 #
 # This file is part of Datkit.
-# See http://myokit.org for copyright, sharing, and licensing details.
+# For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
 """
 Datkit.
@@ -48,10 +48,13 @@ from ._check_times import (  # noqa
 )
 
 from ._points import (  # noqa
+    abs_max_on,
     index,
     index_near,
     index_on,
+    max_on,
     mean_on,
+    min_on,
     value_at,
     value_near,
 )

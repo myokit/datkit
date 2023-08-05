@@ -2,7 +2,7 @@
 # Datkit's version info
 #
 # This file is part of Datkit.
-# See http://myokit.org for copyright, sharing, and licensing details.
+# For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
 
 # Version as a tuple (major, minor, revision)

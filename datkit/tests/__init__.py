@@ -3,7 +3,7 @@
 # Test module
 #
 # This file is part of Datkit.
-# See http://myokit.org for copyright, sharing, and licensing details.
+# For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
 import os
 

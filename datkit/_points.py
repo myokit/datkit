@@ -2,11 +2,23 @@
 # Methods to find values at points.
 #
 # This file is part of Datkit.
-# See http://myokit.org for copyright, sharing, and licensing details.
+# For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
 import numpy as np
 
 import datkit
+
+
+def abs_max_on(times, values, t0, t1, include_left=True, include_right=False):
+    """
+    Returns a tuple ``(t_max, v_max)`` corresponding to the maximum value in
+    ``values`` on the interval from ``t0`` to ``t1``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    i = i + np.argmax(np.abs(values[i:j]))
+    return times[i], values[i]
 
 
 def index(times, t, ttol=1e-9):
@@ -90,16 +102,38 @@ def index_on(times, t0, t1, include_left=True, include_right=False):
     return i, j
 
 
+def max_on(times, values, t0, t1, include_left=True, include_right=False):
+    """
+    Returns a tuple ``(t_max, v_max)`` corresponding to the maximum value in
+    ``values`` on the interval from ``t0`` to ``t1``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    i = i + np.argmax(values[i:j])
+    return times[i], values[i]
+
+
 def mean_on(times, values, t0, t1, include_left=True, include_right=False):
     """
     Returns the mean of ``values`` on the interval from ``t0`` to ``t1``.
 
-    By default, the interval is taken as ``t0 <= times < t1``, but this can be
-    customized using ``include_left`` and ``include_right``.
+    See also :meth:`index_on`.
     """
     i, j = index_on(times, t0, t1, include_left, include_right)
     return np.mean(values[i:j])
 
+
+def min_on(times, values, t0, t1, include_left=True, include_right=False):
+    """
+    Returns a tuple ``(t_min, v_min)`` corresponding to the minimum value in
+    ``values`` on the interval from ``t0`` to ``t1``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    i = i + np.argmin(values[i:j])
+    return times[i], values[i]
 
 def value_at(times, values, t, ttol=1e-9):
     """

@@ -3,7 +3,7 @@
 # Tests the datkit points methods.
 #
 # This file is part of Datkit.
-# See http://myokit.org for copyright, sharing, and licensing details.
+# For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
 import unittest
 
@@ -14,6 +14,16 @@ import datkit as d
 
 class PointsTest(unittest.TestCase):
     """ Tests methods from the hidden _points module. """
+
+    def test_abs_max_on(self):
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertEqual(d.abs_max_on(t, v, 0, 1), (0, 1))
+        self.assertEqual(d.abs_max_on(t, v, 0.5, 1), (t[49], v[49]))
+        self.assertEqual(d.abs_max_on(t, v, 0.5, 1, True, True), (1, -1))
+        self.assertEqual(d.abs_max_on(t, v, 0.6, 1.5), (1, -1))
+        self.assertEqual(d.abs_max_on(t, v, 1.5, 2), (t[99], v[99]))
+        self.assertEqual(d.abs_max_on(t, v, 1.5, 2, False, True), (2, 1))
 
     def test_index(self):
 
@@ -152,13 +162,35 @@ class PointsTest(unittest.TestCase):
         t = np.arange(-6, 18, 3)
         self.assertEqual(d.index_on(t, -3, 9), (1, 5))
 
+    def test_max_on(self):
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertEqual(d.max_on(t, v, 0, 1), (0, 1))
+        self.assertEqual(d.max_on(t, v, 0.5, 1), (t[25], v[25]))
+        self.assertEqual(d.max_on(t, v, 0.6, 1.5), (t[74], v[74]))
+        self.assertEqual(d.max_on(t, v, 1.5, 2), (t[99], v[99]))
+        self.assertEqual(d.max_on(t, v, 1.5, 2, False, True), (t[100], v[100]))
+
     def test_mean_on(self):
         t = np.arange(1, 11)
-        print(t)
         self.assertEqual(d.mean_on(t, t, 1, 11), 5.5)
         self.assertEqual(d.mean_on(t, t, 4, 8), 5.5)
         self.assertEqual(d.mean_on(t, t, 4, 8, False), 6)
         self.assertEqual(d.mean_on(t, t, 4, 8, True, True), 6)
+        v = -3 + 8 * t[::-1]
+        self.assertEqual(d.mean_on(t, v, 1, 11), 41)
+        self.assertEqual(d.mean_on(t, v, 4, 8), 41)
+        self.assertEqual(d.mean_on(t, v, 4, 8, False), 37)
+        self.assertEqual(d.mean_on(t, v, 4, 8, True, True), 37)
+
+    def test_min_on(self):
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertEqual(d.min_on(t, v, 0, 1), (t[49], v[49]))
+        self.assertEqual(d.min_on(t, v, 0.5, 2), (t[50], v[50]))
+        self.assertEqual(d.min_on(t, v, 0.5, 1.5), (t[50], v[50]))
+        self.assertEqual(d.min_on(t, v, 1.5, 2), (t[75], v[75]))
+        self.assertEqual(d.min_on(t, v, 1.5, 2, False), (t[76], v[76]))
 
     def test_value_at(self):
         t = np.arange(0, 10)
