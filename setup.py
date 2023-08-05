@@ -46,7 +46,7 @@ setup(
     #url='http://myokit.org',
     project_urls={
         'Bug Tracker': 'https://github.com/myokit/datkit/issues',
-        #'Documentation': 'http://docs.myokit.org',
+        'Documentation': 'http://datkit.readthedocs.io/',
         'Source Code': 'https://github.com/myokit/datkit',
     },
 
@@ -77,7 +77,7 @@ setup(
     # Optional extras
     extras_require={
         'docs': [
-            #'sphinx>=1.7.4',        # Doc generation
+            'sphinx>=1.7.4',        # Doc generation
         ],
         'dev': [
             'coverage',             # Coverage checking
