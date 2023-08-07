@@ -151,7 +151,7 @@ class SmoothingTest(unittest.TestCase):
             plt.plot(x, z)
             plt.show()
 
-       # Wrong arguments
+        # Wrong arguments
         self.assertRaisesRegex(
             ValueError, 'same size', d.haar_downsample, t, t[:-1], 3)
 
@@ -211,7 +211,7 @@ class SmoothingTest(unittest.TestCase):
             plt.plot(x, z)
             plt.show()
 
-       # Wrong arguments
+        # Wrong arguments
         self.assertRaisesRegex(
             ValueError, 'same size', d.moving_average, t, v[:-1], 3)
 
