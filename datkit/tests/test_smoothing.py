@@ -77,7 +77,7 @@ class SmoothingTest(unittest.TestCase):
         v = np.sin(t * 2 * np.pi)
         v += 0.02 * np.cos(t * 150 * np.pi)
         v += r.normal(0, 0.02, v.shape)
-        x, y = d.gaussian_smoothing(t, v, w=21)
+        x, y = d.gaussian_smoothing(t, v, t=0.02)
         z = np.sin(x * 2 * np.pi)
         self.assertLess(np.max(np.abs(y - z)), 0.03)
 
@@ -88,6 +88,10 @@ class SmoothingTest(unittest.TestCase):
             plt.plot(x, y)
             plt.plot(x, z)
             plt.show()
+
+        # Wrong arguments
+        self.assertRaisesRegex(
+            ValueError, 'same size', d.gaussian_smoothing, t, t[:-1], 3)
 
     def test_haar_downsample(self):
 
@@ -147,6 +151,10 @@ class SmoothingTest(unittest.TestCase):
             plt.plot(x, z)
             plt.show()
 
+       # Wrong arguments
+        self.assertRaisesRegex(
+            ValueError, 'same size', d.haar_downsample, t, t[:-1], 3)
+
     def test_moving_average(self):
 
         # Numerical tests with ones: should return all ones
@@ -191,7 +199,7 @@ class SmoothingTest(unittest.TestCase):
         v = np.sin(t * 2 * np.pi)
         v += 0.02 * np.cos(t * 150 * np.pi)
         v += r.normal(0, 0.02, v.shape)
-        x, y = d.moving_average(t, v, w=21)
+        x, y = d.moving_average(t, v, t=0.02)
         z = np.sin(x * 2 * np.pi)
         self.assertLess(np.max(np.abs(y - z)), 0.02)
 
@@ -203,9 +211,49 @@ class SmoothingTest(unittest.TestCase):
             plt.plot(x, z)
             plt.show()
 
+       # Wrong arguments
+        self.assertRaisesRegex(
+            ValueError, 'same size', d.moving_average, t, v[:-1], 3)
+
     def test_window_size(self):
 
-        self.assertTrue(False)
+        # Window size checking
+        t = np.linspace(0, 5, 51)  # dt = 0.1
+        self.assertEqual(d.window_size(t, 3), 3)
+        self.assertEqual(d.window_size(t, 5), 5)
+        self.assertEqual(d.window_size(t, 7), 7)
+        self.assertRaisesRegex(ValueError, '3 or greater', d.window_size, t, 1)
+        self.assertRaisesRegex(ValueError, 'odd number', d.window_size, t, 0)
+        self.assertRaisesRegex(ValueError, 'odd number', d.window_size, t, 2)
+        self.assertRaisesRegex(ValueError, 'odd number', d.window_size, t, 4)
+        self.assertEqual(d.window_size(t, 49), 49)
+        self.assertEqual(d.window_size(t, 51), 51)
+        self.assertRaisesRegex(
+            ValueError, 'length of times', d.window_size, t, 53)
+
+        # Conversion from time
+        self.assertEqual(d.window_size(t, t=0.29999), 3)
+        self.assertEqual(d.window_size(t, t=0.3), 3)
+        self.assertEqual(d.window_size(t, t=0.31), 3)
+        self.assertEqual(d.window_size(t, t=0.39999), 3)
+        self.assertEqual(d.window_size(t, t=0.4), 5)
+        self.assertEqual(d.window_size(t, t=0.5), 5)
+        self.assertEqual(d.window_size(t, t=0.7), 7)
+        self.assertRaisesRegex(ValueError, '3 times', d.window_size, t, t=0)
+        self.assertRaisesRegex(ValueError, '3 times', d.window_size, t, t=0.1)
+        self.assertRaisesRegex(ValueError, '3 times', d.window_size, t, t=0.2)
+        self.assertRaisesRegex(
+            ValueError, '3 times', d.window_size, t, t=0.29)
+        self.assertEqual(d.window_size(t, t=4.9), 49)
+        self.assertEqual(d.window_size(t, t=5.0), 51)
+        self.assertEqual(d.window_size(t, t=5.1), 51)
+        self.assertRaisesRegex(
+            ValueError, 'length of times', d.window_size, t, t=5.2)
+
+        # Both or None
+        self.assertRaisesRegex(ValueError, 'No window size', d.window_size, t)
+        self.assertRaisesRegex(
+            ValueError, 'Two window sizes', d.window_size, t, 3, 0.3)
 
 
 if __name__ == '__main__':

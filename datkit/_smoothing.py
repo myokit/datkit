@@ -6,6 +6,8 @@
 #
 import numpy as np
 
+import datkit as d
+
 
 def gaussian_smoothing(times, values, w=None, t=None):
     """
@@ -19,6 +21,10 @@ def gaussian_smoothing(times, values, w=None, t=None):
     The Gaussian kernel is determined as ``np.exp(-x**2)``, where ``x`` ranges
     from -2 to +2 in the window.
     """
+    times, values = np.asarray(times), np.asarray(values)
+    if len(times) != len(values):
+        raise ValueError('Times and values vectors must have same size.')
+
     w = window_size(times, w, t)
     k = np.exp(-np.linspace(-2, 2, w)**2)
     t = times[w // 2: -(w // 2)]
@@ -40,6 +46,7 @@ def haar_downsample(times, values, repeats=1):
     times, values = np.asarray(times), np.asarray(values)
     if len(times) != len(values):
         raise ValueError('Times and values vectors must have same size.')
+
     for r in range(repeats):
         if len(times) % 2:
             times, values = times[:-1], values[:-1]
@@ -59,6 +66,10 @@ def moving_average(times, values, w=None, t=None):
 
     Returns a new time series ``x, y`` of length ``len(times) - w + 1``.
     """
+    times, values = np.asarray(times), np.asarray(values)
+    if len(times) != len(values):
+        raise ValueError('Times and values vectors must have same size.')
+
     w = window_size(times, w, t)
     t = times[w // 2: -(w // 2)]
     return t, np.convolve(values, np.ones(w), 'valid') / w
@@ -83,18 +94,18 @@ def window_size(times, w=None, t=None):
         dt = d.sampling_interval(times)
         if t / dt < 2.9:
             raise ValueError(
-                'Invalid window size: must be at least three times the'
-                f' sampling interval {dt}.')
+                'Invalid window size: must be at least 3 times the samplig'
+                f' interval {dt}.')
 
-        w = 1 + 2 * ((t / dt) // 2)
+        w = int(1 + 2 * ((t / dt) // 2))
 
     elif t is None:
         w_org = w
         w = int(round(w))
         if w < 3 or w % 2 == 0:
             raise ValueError(
-                'Invalid window size: must be an odd number equal to or'
-                f' greater than 3. Got {w_org}.')
+                'Invalid window size: must be an odd number and at least'
+                f' 3 or greater. Got {w_org}.')
 
     else:
         raise ValueError(
