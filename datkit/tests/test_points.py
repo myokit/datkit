@@ -162,6 +162,17 @@ class PointsTest(unittest.TestCase):
         t = np.arange(-6, 18, 3)
         self.assertEqual(d.index_on(t, -3, 9), (1, 5))
 
+        # Values not specified
+        t = np.arange(0, 20, 2)
+        print(t)
+        self.assertEqual(d.index_on(t), (0, 10))
+        self.assertEqual(d.index_on(t, include_left=False), (0, 10))
+        self.assertEqual(d.index_on(t, include_right=True), (0, 10))
+        self.assertEqual(
+            d.index_on(t, include_left=False, include_right=True), (0, 10))
+        self.assertEqual(d.index_on(t, 3), (2, 10))
+        self.assertEqual(d.index_on(t, None, 10), (0, 5))
+
     def test_max_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)

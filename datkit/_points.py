@@ -9,7 +9,8 @@ import numpy as np
 import datkit
 
 
-def abs_max_on(times, values, t0, t1, include_left=True, include_right=False):
+def abs_max_on(times, values, t0=None, t1=None, include_left=True,
+               include_right=False):
     """
     Returns a tuple ``(t_max, v_max)`` corresponding to the maximum value in
     ``values`` on the interval from ``t0`` to ``t1``.
@@ -78,7 +79,7 @@ def index_near(times, t):
     return i if i == 0 or times[i] - t < t - times[i - 1] else i - 1
 
 
-def index_on(times, t0, t1, include_left=True, include_right=False):
+def index_on(times, t0=None, t1=None, include_left=True, include_right=False):
     """
     Returns a tuple ``(i0, i1)`` corresponding to the interval from ``t0`` to
     ``t1`` in ``times``.
@@ -86,11 +87,20 @@ def index_on(times, t0, t1, include_left=True, include_right=False):
     By default, the interval is taken as ``t0 <= times < t1``, but this can be
     customized using ``include_left`` and ``include_right``.
 
-    If any of the points are outside of range, the interval returned will be
-    smaller or even empty.
+    If one or both points are out of range, indices corresponding to the first
+    and/or last entries in ``times`` are returned. Note that this may result in
+    an empty interval if ``t0 < t1 < times[0]`` or ``times[1] < t0 < t1``.
+
+    If ``t0`` is ``None``, the first index will be ``0``, regardless of the
+    value of ``include_left``. If ``t1`` is ``None`` the second index will be
+    ``len(times)``, regardless of the value of ``include_right``.
     """
     if len(times) < 1:
         raise ValueError('Times must contain at least one value.')
+    if t0 is None:
+        t0 = times[0] - 1
+    if t1 is None:
+        t1 = times[-1] + 1
     if t1 < t0:
         raise ValueError('Time t1 must be greater than or equal to t0.')
     i = np.searchsorted(times, t0)
@@ -102,7 +112,8 @@ def index_on(times, t0, t1, include_left=True, include_right=False):
     return i, j
 
 
-def max_on(times, values, t0, t1, include_left=True, include_right=False):
+def max_on(times, values, t0=None, t1=None, include_left=True,
+           include_right=False):
     """
     Returns a tuple ``(t_max, v_max)`` corresponding to the maximum value in
     ``values`` on the interval from ``t0`` to ``t1``.
@@ -114,7 +125,8 @@ def max_on(times, values, t0, t1, include_left=True, include_right=False):
     return times[i], values[i]
 
 
-def mean_on(times, values, t0, t1, include_left=True, include_right=False):
+def mean_on(times, values, t0=None, t1=None, include_left=True,
+            include_right=False):
     """
     Returns the mean of ``values`` on the interval from ``t0`` to ``t1``.
 
@@ -124,7 +136,8 @@ def mean_on(times, values, t0, t1, include_left=True, include_right=False):
     return np.mean(values[i:j])
 
 
-def min_on(times, values, t0, t1, include_left=True, include_right=False):
+def min_on(times, values, t0=None, t1=None, include_left=True,
+           include_right=False):
     """
     Returns a tuple ``(t_min, v_min)`` corresponding to the minimum value in
     ``values`` on the interval from ``t0`` to ``t1``.
