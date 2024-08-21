@@ -12,14 +12,17 @@ import datkit as d
 def gaussian_smoothing(times, values, w=None, t=None):
     """
     Applies a Gaussian smoothing filter to ``v``, using a window of either
-    width ``w`` or a width derived from the duration ``t``.
+    ``w`` samples or a number derived from the duration ``t``.
 
-    If ``w`` is given, it must be a strictly positive and odd integer. If ``t``
-    is given, the used width will be the nearest odd integer to ``t`` over the
-    sampling interval. See :meth:`window_size` for details.
+    If ``w`` is given, it must be a strictly positive and odd integer,
+    indicating the number of data points to include in the window. If a
+    duration ``t`` is given, it will be converted to an integer width using the
+    method :meth:`window_size`.
 
-    The Gaussian kernel is determined as ``np.exp(-x**2)``, where ``x`` ranges
+    The Gaussian kernel is determined as ``np.exp(-i**2)``, where ``i`` ranges
     from -2 to +2 in the window.
+
+    Returns a new time series ``x, y`` of length ``len(times) - w + 1``.
     """
     times, values = np.asarray(times), np.asarray(values)
     if len(times) != len(values):
@@ -57,12 +60,13 @@ def haar_downsample(times, values, repeats=1):
 
 def moving_average(times, values, w=None, t=None):
     """
-    Applies a moving average filter to ``v``, using a window of either width
-    ``w`` or a width derived from the duration ``t``.
+    Applies a moving average filter to ``v``, using a window of either ``w``
+    samples or a number derived from the duration ``t``.
 
-    If ``w`` is given, it must be a strictly positive and odd integer. If ``t``
-    is given, the used width will be the nearest odd integer to ``t`` over the
-    sampling interval. See :meth:`window_size` for details.
+    If ``w`` is given, it must be a strictly positive and odd integer,
+    indicating the number of data points to include in the window. If a
+    duration ``t`` is given, it will be converted to an integer width using the
+    method :meth:`window_size`.
 
     Returns a new time series ``x, y`` of length ``len(times) - w + 1``.
     """
@@ -77,7 +81,7 @@ def moving_average(times, values, w=None, t=None):
 
 def window_size(times, w=None, t=None):
     """
-    Returns a window size of either ``w`` samples or width ``t``.
+    Returns a window size of either ``w`` samples or duration ``t``.
 
     If ``w`` is given, it must be a strictly positive odd integer.
 
