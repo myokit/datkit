@@ -22,6 +22,18 @@ def abs_max_on(times, values, t0=None, t1=None, include_left=True,
     return times[i], values[i]
 
 
+def iabs_max_on(times, values, t0=None, t1=None, include_left=True,
+                include_right=False):
+    """
+    Returns the index ``i`` corresponding to the maximum of ``abs(values)`` on
+    the interval from ``t0`` to ``t1``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    return i + np.argmax(np.abs(values[i:j]))
+
+
 def imax_on(times, values, t0=None, t1=None, include_left=True,
             include_right=False):
     """

@@ -25,6 +25,16 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2), (t[99], v[99]))
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2, False, True), (2, 1))
 
+    def test_iabs_max_on(self):
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertEqual(d.iabs_max_on(t, v, 0, 1), 0)
+        self.assertEqual(d.iabs_max_on(t, v, 0.5, 1), 49)
+        self.assertEqual(d.iabs_max_on(t, v, 0.5, 1, True, True), 50)
+        self.assertEqual(d.iabs_max_on(t, v, 0.6, 1.5), 50)
+        self.assertEqual(d.iabs_max_on(t, v, 1.5, 2), 99)
+        self.assertEqual(d.iabs_max_on(t, v, 1.5, 2, False, True), 100)
+
     def test_imax_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
