@@ -22,3 +22,7 @@ Finding points
 
 .. autofunction:: abs_max_on
 
+.. autofunction:: imax_on
+
+.. autofunction:: imin_on
+

@@ -25,6 +25,24 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2), (t[99], v[99]))
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2, False, True), (2, 1))
 
+    def test_imax_on(self):
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertEqual(d.imax_on(t, v, 0, 1), 0)
+        self.assertEqual(d.imax_on(t, v, 0.5, 1), 25)
+        self.assertEqual(d.imax_on(t, v, 0.6, 1.5), 74)
+        self.assertEqual(d.imax_on(t, v, 1.5, 2), 99)
+        self.assertEqual(d.imax_on(t, v, 1.5, 2, False, True), 100)
+
+    def test_imin_on(self):
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertEqual(d.imin_on(t, v, 0, 1), 49)
+        self.assertEqual(d.imin_on(t, v, 0.5, 2), 50)
+        self.assertEqual(d.imin_on(t, v, 0.5, 1.5), 50)
+        self.assertEqual(d.imin_on(t, v, 1.5, 2), 75)
+        self.assertEqual(d.imin_on(t, v, 1.5, 2, False), 76)
+
     def test_index(self):
 
         # Simple tests
@@ -164,7 +182,6 @@ class PointsTest(unittest.TestCase):
 
         # Values not specified
         t = np.arange(0, 20, 2)
-        print(t)
         self.assertEqual(d.index_on(t), (0, 10))
         self.assertEqual(d.index_on(t, include_left=False), (0, 10))
         self.assertEqual(d.index_on(t, include_right=True), (0, 10))
