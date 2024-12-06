@@ -1,10 +1,11 @@
-************
-Introduction
-************
+*****************
+Table of contents
+*****************
 
 .. module:: datkit
 
-Some silly scripts to do stuff I do all the time.
+This module contains some simple methods that are useful when analysing time
+series data.
 
 ..  toctree::
 

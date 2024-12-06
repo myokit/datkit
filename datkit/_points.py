@@ -13,13 +13,37 @@ def abs_max_on(times, values, t0=None, t1=None, include_left=True,
                include_right=False):
     """
     Returns a tuple ``(t_max, v_max)`` corresponding to the maximum value in
-    ``values`` on the interval from ``t0`` to ``t1``.
+    ``abs(values)`` on the interval from ``t0`` to ``t1``.
 
     See also :meth:`index_on`.
     """
     i, j = index_on(times, t0, t1, include_left, include_right)
     i = i + np.argmax(np.abs(values[i:j]))
     return times[i], values[i]
+
+
+def imax_on(times, values, t0=None, t1=None, include_left=True,
+            include_right=False):
+    """
+    Returns the index ``i`` corresponding to the maximum value on the interval
+    from ``t0`` to ``t1``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    return i + np.argmax(values[i:j])
+
+
+def imin_on(times, values, t0=None, t1=None, include_left=True,
+            include_right=False):
+    """
+    Returns the index ``i`` corresponding to the maximum value on the interval
+    from ``t0`` to ``t1``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    return i + np.argmin(values[i:j])
 
 
 def index(times, t, ttol=1e-9):

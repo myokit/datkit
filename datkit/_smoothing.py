@@ -44,7 +44,8 @@ def haar_downsample(times, values, repeats=1):
     - If the signal length is odd, the final sample is omitted
     - The first two samples are averaged, then the next two, etc.
 
-    Returns a new and downsampled time series ``(times_2, values_2)``.
+    Returns a new and downsampled time series ``(times_2, values_2)`` of length
+    ``len(times) // 2**repeats``.
     """
     times, values = np.asarray(times), np.asarray(values)
     if len(times) != len(values):
@@ -98,7 +99,7 @@ def window_size(times, w=None, t=None):
         dt = d.sampling_interval(times)
         if t / dt < 2.9:
             raise ValueError(
-                'Invalid window size: must be at least 3 times the samplig'
+                'Invalid window size: must be at least 3 times the sampling'
                 f' interval {dt}.')
 
         w = int(1 + 2 * ((t / dt) // 2))
