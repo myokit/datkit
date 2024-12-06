@@ -23,7 +23,7 @@ def abs_max_on(times, values, t0=None, t1=None, include_left=True,
 
 
 def imax_on(times, values, t0=None, t1=None, include_left=True,
-           include_right=False):
+            include_right=False):
     """
     Returns the index ``i`` corresponding to the maximum value on the interval
     from ``t0`` to ``t1``.
@@ -35,7 +35,7 @@ def imax_on(times, values, t0=None, t1=None, include_left=True,
 
 
 def imin_on(times, values, t0=None, t1=None, include_left=True,
-           include_right=False):
+            include_right=False):
     """
     Returns the index ``i`` corresponding to the maximum value on the interval
     from ``t0`` to ``t1``.
