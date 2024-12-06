@@ -26,3 +26,5 @@ Finding points
 
 .. autofunction:: imin_on
 
+.. autofunction:: iabs_max_on
+

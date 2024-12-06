@@ -49,6 +49,7 @@ from ._check_times import (  # noqa
 
 from ._points import (  # noqa
     abs_max_on,
+    iabs_max_on,
     imax_on,
     imin_on,
     index,
