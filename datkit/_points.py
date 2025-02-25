@@ -22,6 +22,18 @@ def abs_max_on(times, values, t0=None, t1=None, include_left=True,
     return times[i], values[i]
 
 
+def data_on(times, values, t0=None, t1=None, include_left=True,
+            include_right=False):
+    """
+    Returns a tuple ``(times2, values2)`` corresponding to the interval from
+    ``t0`` to ``t1`` in ``times``.
+
+    See also :meth:`index_on`.
+    """
+    i, j = index_on(times, t0, t1, include_left, include_right)
+    return times[i:j], values[i:j]
+
+
 def iabs_max_on(times, values, t0=None, t1=None, include_left=True,
                 include_right=False):
     """
@@ -60,7 +72,8 @@ def imin_on(times, values, t0=None, t1=None, include_left=True,
 
 def index(times, t, ttol=1e-9):
     """
-    Returns the index of time ``t`` in ``times``.
+    Returns the index of time ``t`` in ``times``, assuming ``times`` is a
+    non-decreasing sequence.
 
     A ``ValueError`` will be raised if time ``t`` cannot be found in ``times``.
     Two times will be regarded as equal if they are within ``ttol`` of each
@@ -87,10 +100,41 @@ def index(times, t, ttol=1e-9):
     return i
 
 
+def index_crossing(values, value=0):
+    """
+    Returns the lowest two indices ``i`` and ``j`` for which ``values`` crosses
+    the given ``value`` (going either from below to above, or vice versa).
+
+    For example ``datkit.index([0, 1, 2, 3, 4], 2.5)`` returns ``(2, 3)``.
+
+    The method is best applied to smooth (denoised) data.
+
+    A ``ValueError`` is raised if no crossing can be found, or
+    """
+    # Get sign of values - value, as either -1, 0, or 1
+    # This means we can't use numpy's sign function.
+    v = np.asarray(values) - value
+    s = np.zeros(v.shape)
+    s[v > 0] = 1
+    s[v < 0] = -1
+    # Find first non-zero
+    i = np.where(s != 0)[0]
+    if len(i) > 0:
+        i = i[0]
+        # Find first opposing sign
+        j = np.where(s == -s[i])[0]
+        if len(j) > 0:
+            j = j[0]
+            # Find last value with original sign
+            i = np.where(s[:j] == s[i])[0][-1]
+            return i, j
+    raise ValueError(f'No crossing of {value} found in array.')
+
+
 def index_near(times, t):
     """
     Returns the index of time ``t`` in ``times``, or the index of the nearest
-    value to it.
+    value to it, assuming ``times`` is a non-decreasing sequence.
 
     If ``t`` is outside the range of ``times`` by more than half a sampling
     interval (as returned by :meth:`datkit.sampling_interval`), a
@@ -118,7 +162,7 @@ def index_near(times, t):
 def index_on(times, t0=None, t1=None, include_left=True, include_right=False):
     """
     Returns a tuple ``(i0, i1)`` corresponding to the interval from ``t0`` to
-    ``t1`` in ``times``.
+    ``t1`` in ``times``, assuming ``times`` is a non-decreasing sequence.
 
     By default, the interval is taken as ``t0 <= times < t1``, but this can be
     customized using ``include_left`` and ``include_right``.
@@ -185,20 +229,61 @@ def min_on(times, values, t0=None, t1=None, include_left=True,
     return times[i], values[i]
 
 
+def time_crossing(times, values, value=0):
+    """
+    Returns the time at which ``values`` first crosses ``value``.
+
+    Specifically, the method linearly interpolates between the entries from
+    ``times`` at the indices returned by :meth:`index_crossing`. No assumptions
+    are made about ``times`` (other than that it has the same length as
+    ``values``), so that arrays representing other quantities can also be
+    passed in.
+
+    The method is best applied to smooth (denoised) data.
+
+    See also :meth:`index_crossing`.
+    """
+    i, j = index_crossing(values, value)
+    t0, t1 = times[i], times[j]
+    v0, v1 = values[i] - value, values[j] - value
+    return t0 - v0 * (t1 - t0) / (v1 - v0)
+
+
 def value_at(times, values, t, ttol=1e-9):
     """
-    Returns the value at the given time point.
+    Returns ``values[i]`` such that ``times[i]`` is within ``ttol`` of the time
+    ``t``.
 
-    A ``ValueError`` will be raised if time ``t`` cannot be found in ``times``.
-    Two times will be regarded as equal if they are within ``ttol`` of each
-    other.
+    A ``ValueError`` will be raised if no such ``i`` can be found.
     """
     return values[index(times, t, ttol=ttol)]
 
 
+def value_interpolated(times, values, t):
+    """
+    Returns the value at the given time, obtained by linear interpolation if
+    ``t`` is not presesnt in ``times``.
+
+    A ``ValueError`` is raised if no ``i`` can be found such that
+    ``times[i] <= t <= times[i + 1]``.
+    """
+    i = np.searchsorted(times, t)
+    n = len(times)
+    if n > 0 and i < n and times[i] == t:
+        return values[i]
+    if i == 0 or i == n:
+        raise ValueError(
+            'Unable to find entries in times from which to interpolate'
+            f' for t={t}.')
+    t0, t1 = times[i - 1], times[i]
+    v0, v1 = values[i - 1], values[i]
+    return v0 + (t - t0) * (v1 - v0) / (t1 - t0)
+
+
 def value_near(times, values, t):
     """
-    Returns the value nearest the given time point, if present in the data.
+    Returns ``values[i]`` such that ``times[i]`` is the nearest point to ``t``
+    in the data.
 
     A ``ValueError`` will be raised if no time near ``t`` can be found in
     ``times`` (see :meth:`index_near`).

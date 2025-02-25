@@ -25,6 +25,15 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2), (t[99], v[99]))
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2, False, True), (2, 1))
 
+    def test_data_on(self):
+        t = [0, 1, 2, 3, 4, 5, 6, 7]
+        v = [10, 11, 12, 13, 14, 15, 16, 17]
+        self.assertEqual(d.data_on(t, v, 3, 5), ([3, 4], [13, 14]))
+        self.assertEqual(d.data_on(t, v, 4), ([4, 5, 6, 7], [14, 15, 16, 17]))
+        self.assertEqual(d.data_on(t, v, t1=2), ([0, 1], [10, 11]))
+        self.assertEqual(d.data_on(t, v, t1=2, include_right=True),
+                         ([0, 1, 2], [10, 11, 12]))
+
     def test_iabs_max_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
@@ -115,6 +124,47 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.index(times, 7.3 + 9e-10), 49)
         self.assertRaisesRegex(ValueError, 'range', d.index, times, 7.3 + 2e-9)
 
+        # Any sequence is accepted
+        self.assertEqual(d.index(tuple(times), 7.3), 49)
+
+    def test_index_crossing(self):
+
+        # Simple test
+        values = [4, 5, 6, 7, 8, 6, 7, 8, 9]
+        self.assertEqual(d.index_crossing(values, 6.5), (2, 3))
+        self.assertEqual(d.index_crossing(values, 8.5), (7, 8))
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, values, 1)
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, values, 4)
+
+        # Quadratic and cubic
+        values = np.linspace(-5, 5, 100)**2
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, values)
+        values = (np.linspace(-5, 5, 100) - 3)**3
+        self.assertEqual(d.index_crossing(values), (79, 80))
+        self.assertTrue(values[79] < 0, values[80] > 0)
+        values = -(np.linspace(-5, 5, 100) - 2)**3
+        self.assertEqual(d.index_crossing(values), (69, 70))
+        self.assertTrue(values[69] > 0, values[70] < 0)
+
+        # Annoying case 1: starting or ending at value
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, [4, 5, 6], 4)
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, [4, 4, 4, 5, 6], 4)
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, [4, 5, 6], 6)
+        self.assertRaisesRegex(
+            ValueError, 'No crossing', d.index_crossing, [4, 5, 6, 6, 6], 6)
+        values = [3, 3, 3, 4, 5, 4, 3, 2, 1, 2, 3, 3, 3]
+        self.assertEqual(d.index_crossing(values, 3), (5, 7))
+
+        # Annoying case 2: being flat at the selected value
+        values = [9, 9, 8, 7, 6, 5, 5, 5, 5, 4, 3, 2, 2]
+        self.assertEqual(d.index_crossing(values, 5), (4, 9))
+
     def test_index_near(self):
 
         # Exact matches
@@ -137,6 +187,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.index_near(times, 9.6), 19)
         self.assertEqual(d.index_near(times, 9.7499), 19)
         self.assertRaisesRegex(ValueError, 'range', d.index_near, times, 9.751)
+
+        # Any sequence is accepted
+        self.assertEqual(d.index_near(tuple(times), 9.6), 19)
+        self.assertEqual(d.index_near(list(times), 9.6), 19)
 
     def test_index_on(self):
         t = np.arange(0, 10)
@@ -200,6 +254,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.index_on(t, 3), (2, 10))
         self.assertEqual(d.index_on(t, None, 10), (0, 5))
 
+        # Any sequence is accepted
+        self.assertEqual(d.index_on(tuple(t), 3), (2, 10))
+        self.assertEqual(d.index_on(list(t), 3), (2, 10))
+
     def test_max_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
@@ -230,6 +288,20 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.min_on(t, v, 1.5, 2), (t[75], v[75]))
         self.assertEqual(d.min_on(t, v, 1.5, 2, False), (t[76], v[76]))
 
+    def test_time_crossing(self):
+        t = np.linspace(1, 5, 100)
+        v = np.sin(t) + 1
+        self.assertLess(abs(d.time_crossing(t, v, 1) - np.pi), 1e-7)
+        self.assertRaises(ValueError, d.time_crossing, t, v)
+        t = np.linspace(0, 5, 100)
+        self.assertRaises(ValueError, d.time_crossing, t, np.cos(t) - 1)
+        t, v = [2, 3, 4, 5], [10, 20, 30, 40]
+        self.assertEqual(d.time_crossing(t, v, 25), 3.5)
+        self.assertEqual(d.time_crossing(t, v, 31), 4.1)
+        t, v = [4, 5, 6, 7], [50, 40, 30, 20]
+        self.assertEqual(d.time_crossing(t, v, 25), 6.5)
+        self.assertEqual(d.time_crossing(t, v, 31), 5.9)
+
     def test_value_at(self):
         t = np.arange(0, 10)
         self.assertEqual(d.value_at(t, t, 0), 0)
@@ -238,6 +310,24 @@ class PointsTest(unittest.TestCase):
         v = 20 + 2 * t
         self.assertEqual(d.value_at(t, v, 0), 20)
         self.assertEqual(d.value_at(t, v, 5), 30)
+
+    def test_value_interpolated(self):
+        t, v = [2, 3, 4, 5, 6, 7], [5, 0, 3, -1, 4, 8]
+        self.assertEqual(d.value_interpolated(t, v, 2), 5)
+        self.assertEqual(d.value_interpolated(t, v, 4), 3)
+        self.assertEqual(d.value_interpolated(t, v, 7), 8)
+        self.assertEqual(d.value_interpolated(t, v, 4.5), 1)
+        self.assertEqual(d.value_interpolated(t, v, 5.5), 1.5)
+        self.assertAlmostEqual(d.value_interpolated(t, v, 2.2), 4)
+        self.assertAlmostEqual(d.value_interpolated(t, v, 6.9), 7.6)
+        self.assertRaisesRegex(ValueError, 'entries in times',
+                               d.value_interpolated, t, v, 1.9)
+        self.assertRaisesRegex(ValueError, 'entries in times',
+                               d.value_interpolated, t, v, 7.1)
+        t, v = [0, 1, 2], [6, 6, 6]
+        self.assertEqual(d.value_interpolated(t, v, 0), 6)
+        self.assertEqual(d.value_interpolated(t, v, 1), 6)
+        self.assertEqual(d.value_interpolated(t, v, 2), 6)
 
     def test_value_near(self):
         t = np.arange(0, 10)
