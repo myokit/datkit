@@ -49,16 +49,20 @@ from ._check_times import (  # noqa
 
 from ._points import (  # noqa
     abs_max_on,
+    data_on,
     iabs_max_on,
     imax_on,
     imin_on,
     index,
+    index_crossing,
     index_near,
     index_on,
     max_on,
     mean_on,
     min_on,
+    time_crossing,
     value_at,
+    value_interpolated,
     value_near,
 )
 

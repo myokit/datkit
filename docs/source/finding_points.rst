@@ -4,15 +4,29 @@ Finding points
 
 .. currentmodule:: datkit
 
+Indices and values at specific times
+====================================
+
 .. autofunction:: index
 
 .. autofunction:: index_near
 
 .. autofunction:: index_on
 
+.. autofunction:: index_crossing
+
+.. autofunction:: time_crossing
+
 .. autofunction:: value_at
 
 .. autofunction:: value_near
+
+.. autofunction:: value_interpolated
+
+.. autofunction:: data_on
+
+Averages and extremes
+=====================
 
 .. autofunction:: mean_on
 
