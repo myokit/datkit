@@ -291,7 +291,7 @@ class PointsTest(unittest.TestCase):
     def test_time_crossing(self):
         t = np.linspace(1, 5, 100)
         v = np.sin(t) + 1
-        self.assertLess(abs(d.time_crossing(t, v, 1) -  np.pi), 1e-7)
+        self.assertLess(abs(d.time_crossing(t, v, 1) - np.pi), 1e-7)
         self.assertRaises(ValueError, d.time_crossing, t, v)
         t = np.linspace(0, 5, 100)
         self.assertRaises(ValueError, d.time_crossing, t, np.cos(t) - 1)
