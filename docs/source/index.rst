@@ -10,7 +10,8 @@ series data.
 ..  toctree::
 
     self
+    checking_time_vectors
     finding_points
     smoothing
-    checking_time_vectors
+    spectral_analysis
 

@@ -2,6 +2,10 @@
 Finding points
 **************
 
+The methods listed here let you find indices corresponding to points in time,
+or perform aggregate functions (e.g. mean, min, max) on intervals within a time
+series.
+
 .. currentmodule:: datkit
 
 Indices and values at specific times

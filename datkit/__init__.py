@@ -72,3 +72,9 @@ from ._smoothing import (  # noqa
     moving_average,
     window_size,
 )
+
+from ._spectral import (  # noqa
+    amplitude_spectrum,
+    power_spectral_density,
+)
+
