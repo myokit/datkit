@@ -11,7 +11,7 @@ import datkit as d
 import datkit.tests
 
 
-class SpectralTest(unittest.TestCase):
+class SpectralTest(datkit.tests.TestCase):
     """ Tests methods from the hidden _spectral module. """
 
     def test_amplitude_spectrum(self):
@@ -43,7 +43,7 @@ class SpectralTest(unittest.TestCase):
         # Test if input is unchanged
         t = np.linspace(0, 10, 123)
         v = 6 * np.sin(t * (2 * np.pi * 2))
-        self.assertTrue(au(d.amplitude_spectrum, t, v))
+        self.assertUnchanged(d.amplitude_spectrum, t, v)
 
     def test_power_spectral_density(self):
 
@@ -63,7 +63,7 @@ class SpectralTest(unittest.TestCase):
         # Test if input is unchanged
         t = np.linspace(0, 10, 123)
         v = 6 * np.sin(t * (2 * np.pi * 2))
-        self.assertTrue(au(d.power_spectral_density, t, v))
+        self.assertUnchanged(d.power_spectral_density, t, v)
 
 
 if __name__ == '__main__':
