@@ -5,11 +5,10 @@
 # This file is part of Datkit.
 # For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
-import unittest
-
 import numpy as np
 
 import datkit as d
+import datkit.tests
 
 
 # Extra output
@@ -258,7 +257,7 @@ class SmoothingTest(unittest.TestCase):
 
 if __name__ == '__main__':
     print('Add -v for more debug output')
-    import sys
+    import sys, unittest
     if '-v' in sys.argv:
         debug = True
     unittest.main()
