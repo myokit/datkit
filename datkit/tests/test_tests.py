@@ -7,12 +7,12 @@
 #
 import numpy as np
 
-import datkit as d
 import datkit.tests
 
 
 def mixed(a, b, c, d, e):
     return True
+
 
 def change3(a, b, c, d, e):
     c[3] += 1

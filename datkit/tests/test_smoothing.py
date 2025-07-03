@@ -270,7 +270,8 @@ class SmoothingTest(datkit.tests.TestCase):
 
 if __name__ == '__main__':
     print('Add -v for more debug output')
-    import sys, unittest
+    import sys
+    import unittest
     if '-v' in sys.argv:
         debug = True
     unittest.main()
