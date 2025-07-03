@@ -5,14 +5,13 @@
 # This file is part of Datkit.
 # For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
-import unittest
-
 import numpy as np
 
 import datkit as d
+import datkit.tests
 
 
-class PointsTest(unittest.TestCase):
+class PointsTest(datkit.tests.TestCase):
     """ Tests methods from the hidden _points module. """
 
     def test_abs_max_on(self):
@@ -25,6 +24,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2), (t[99], v[99]))
         self.assertEqual(d.abs_max_on(t, v, 1.5, 2, False, True), (2, 1))
 
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertUnchanged(d.abs_max_on, t, v)
+
     def test_data_on(self):
         t = [0, 1, 2, 3, 4, 5, 6, 7]
         v = [10, 11, 12, 13, 14, 15, 16, 17]
@@ -33,6 +36,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.data_on(t, v, t1=2), ([0, 1], [10, 11]))
         self.assertEqual(d.data_on(t, v, t1=2, include_right=True),
                          ([0, 1, 2], [10, 11, 12]))
+
+        t = [0, 1, 2, 3, 4, 5, 6, 7]
+        v = [10, 11, 12, 13, 14, 15, 16, 17]
+        self.assertUnchanged(d.data_on, t, v)
 
     def test_iabs_max_on(self):
         t = np.linspace(0, 2, 101)
@@ -44,6 +51,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.iabs_max_on(t, v, 1.5, 2), 99)
         self.assertEqual(d.iabs_max_on(t, v, 1.5, 2, False, True), 100)
 
+        t = np.linspace(0, 2, 30)
+        v = np.sin(t * np.pi)
+        self.assertUnchanged(d.iabs_max_on, t, v)
+
     def test_imax_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
@@ -53,6 +64,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.imax_on(t, v, 1.5, 2), 99)
         self.assertEqual(d.imax_on(t, v, 1.5, 2, False, True), 100)
 
+        t = np.linspace(0, 2, 31)
+        v = np.cos(t * np.pi + 3)
+        self.assertUnchanged(d.imax_on, t, v)
+
     def test_imin_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
@@ -61,6 +76,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.imin_on(t, v, 0.5, 1.5), 50)
         self.assertEqual(d.imin_on(t, v, 1.5, 2), 75)
         self.assertEqual(d.imin_on(t, v, 1.5, 2, False), 76)
+
+        t = np.linspace(0, 3, 13)
+        v = np.cos(t * 2 * np.pi)
+        self.assertUnchanged(d.imin_on, t, v)
 
     def test_index(self):
 
@@ -127,6 +146,10 @@ class PointsTest(unittest.TestCase):
         # Any sequence is accepted
         self.assertEqual(d.index(tuple(times), 7.3), 49)
 
+        # Input is unchanged
+        self.assertUnchanged(d.index, np.arange(0, 10), 3)
+        self.assertUnchanged(d.index, np.arange(0, 10), 0)
+
     def test_index_crossing(self):
 
         # Simple test
@@ -165,6 +188,10 @@ class PointsTest(unittest.TestCase):
         values = [9, 9, 8, 7, 6, 5, 5, 5, 5, 4, 3, 2, 2]
         self.assertEqual(d.index_crossing(values, 5), (4, 9))
 
+        # Input is unchanged
+        values = [4, 5, 6, 7, 8, 6, 7, 8, 9]
+        self.assertUnchanged(d.index_crossing, values, 6.5)
+
     def test_index_near(self):
 
         # Exact matches
@@ -191,6 +218,10 @@ class PointsTest(unittest.TestCase):
         # Any sequence is accepted
         self.assertEqual(d.index_near(tuple(times), 9.6), 19)
         self.assertEqual(d.index_near(list(times), 9.6), 19)
+
+        # Input should remain unchanged
+        self.assertUnchanged(d.index_near, np.arange(0, 10), 4)
+        self.assertUnchanged(d.index_near, np.arange(0, 10), 9)
 
     def test_index_on(self):
         t = np.arange(0, 10)
@@ -258,6 +289,11 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.index_on(tuple(t), 3), (2, 10))
         self.assertEqual(d.index_on(list(t), 3), (2, 10))
 
+        # Input should stay unchanged
+        self.assertUnchanged(d.index_on, np.arange(0, 10), 2, 4)
+        self.assertUnchanged(d.index_on, np.arange(0, 10), -5, 4)
+        self.assertUnchanged(d.index_on, np.arange(0, 10), 12, 14)
+
     def test_max_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
@@ -266,6 +302,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.max_on(t, v, 0.6, 1.5), (t[74], v[74]))
         self.assertEqual(d.max_on(t, v, 1.5, 2), (t[99], v[99]))
         self.assertEqual(d.max_on(t, v, 1.5, 2, False, True), (t[100], v[100]))
+
+        t = np.linspace(0, 1, 11)
+        v = np.sin(3 * t * np.pi)
+        self.assertUnchanged(d.max_on, t, v)
 
     def test_mean_on(self):
         t = np.arange(1, 11)
@@ -279,6 +319,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.mean_on(t, v, 4, 8, False), 37)
         self.assertEqual(d.mean_on(t, v, 4, 8, True, True), 37)
 
+        t = np.arange(1, 11)
+        v = -3 + 8 * t[::-1]
+        self.assertUnchanged(d.mean_on, t, v, 2, 7)
+
     def test_min_on(self):
         t = np.linspace(0, 2, 101)
         v = np.cos(t * np.pi)
@@ -287,6 +331,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.min_on(t, v, 0.5, 1.5), (t[50], v[50]))
         self.assertEqual(d.min_on(t, v, 1.5, 2), (t[75], v[75]))
         self.assertEqual(d.min_on(t, v, 1.5, 2, False), (t[76], v[76]))
+
+        t = np.linspace(0, 2, 101)
+        v = np.cos(t * np.pi)
+        self.assertUnchanged(d.min_on, t, v, 1.5, 2, False)
 
     def test_time_crossing(self):
         t = np.linspace(1, 5, 100)
@@ -302,6 +350,10 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.time_crossing(t, v, 25), 6.5)
         self.assertEqual(d.time_crossing(t, v, 31), 5.9)
 
+        t = np.linspace(1, 5, 100)
+        v = np.sin(t) + 1
+        self.assertUnchanged(d.time_crossing, t, v, 0.1)
+
     def test_value_at(self):
         t = np.arange(0, 10)
         self.assertEqual(d.value_at(t, t, 0), 0)
@@ -310,6 +362,10 @@ class PointsTest(unittest.TestCase):
         v = 20 + 2 * t
         self.assertEqual(d.value_at(t, v, 0), 20)
         self.assertEqual(d.value_at(t, v, 5), 30)
+
+        t = np.arange(0, 10)
+        v = 10 + t
+        self.assertUnchanged(d.value_at, t, v, 3)
 
     def test_value_interpolated(self):
         t, v = [2, 3, 4, 5, 6, 7], [5, 0, 3, -1, 4, 8]
@@ -329,6 +385,9 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.value_interpolated(t, v, 1), 6)
         self.assertEqual(d.value_interpolated(t, v, 2), 6)
 
+        t, v = [2, 3, 4, 5, 6, 7], [5, 0, 3, -1, 4, 8]
+        self.assertUnchanged(d.value_interpolated, t, v, 3)
+
     def test_value_near(self):
         t = np.arange(0, 10)
         self.assertEqual(d.value_near(t, t, 0), 0)
@@ -341,6 +400,13 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(d.value_at(t, v, 0), 20)
         self.assertEqual(d.value_at(t, v, 5), 30)
 
+        t = np.arange(0, 10)
+        v = 30 + 2 * t
+        self.assertUnchanged(d.value_at, t, v, 0)
+        self.assertUnchanged(d.value_at, t, v, 5)
+
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()
+

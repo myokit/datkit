@@ -5,14 +5,13 @@
 # This file is part of Datkit.
 # For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
-import unittest
-
 import numpy as np
 
 import datkit as d
+import datkit.tests
 
 
-class SpectralTest(unittest.TestCase):
+class SpectralTest(datkit.tests.TestCase):
     """ Tests methods from the hidden _spectral module. """
 
     def test_amplitude_spectrum(self):
@@ -41,6 +40,11 @@ class SpectralTest(unittest.TestCase):
         self.assertAlmostEqual(a[50], 4, 0)
         self.assertLess(a[51], 0.2)
 
+        # Test if input is unchanged
+        t = np.linspace(0, 10, 123)
+        v = 6 * np.sin(t * (2 * np.pi * 2))
+        self.assertUnchanged(d.amplitude_spectrum, t, v)
+
     def test_power_spectral_density(self):
 
         t = np.linspace(0, 10, 1000)
@@ -56,6 +60,12 @@ class SpectralTest(unittest.TestCase):
         self.assertAlmostEqual(psd[30], 245, 0)
         self.assertLess(psd[31], 0.3)
 
+        # Test if input is unchanged
+        t = np.linspace(0, 10, 123)
+        v = 6 * np.sin(t * (2 * np.pi * 2))
+        self.assertUnchanged(d.power_spectral_density, t, v)
+
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()

@@ -5,18 +5,17 @@
 # This file is part of Datkit.
 # For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
-import unittest
-
 import numpy as np
 
 import datkit as d
+import datkit.tests
 
 
 # Extra output
 debug = False
 
 
-class SmoothingTest(unittest.TestCase):
+class SmoothingTest(datkit.tests.TestCase):
     """ Tests methods from the hidden _smoothing module. """
 
     def test_gaussian_smoothing(self):
@@ -93,6 +92,10 @@ class SmoothingTest(unittest.TestCase):
         self.assertRaisesRegex(
             ValueError, 'same size', d.gaussian_smoothing, t, t[:-1], 3)
 
+        # Input is unchanged
+        self.assertUnchanged(
+            d.gaussian_smoothing, np.arange(11), np.ones(11), 3)
+
     def test_haar_downsample(self):
 
         # Numerical tests with ones: should return all ones
@@ -155,6 +158,9 @@ class SmoothingTest(unittest.TestCase):
         self.assertRaisesRegex(
             ValueError, 'same size', d.haar_downsample, t, t[:-1], 3)
 
+        # Input is unchanged
+        self.assertUnchanged(d.haar_downsample, np.arange(10), np.ones(10))
+
     def test_moving_average(self):
 
         # Numerical tests with ones: should return all ones
@@ -215,6 +221,9 @@ class SmoothingTest(unittest.TestCase):
         self.assertRaisesRegex(
             ValueError, 'same size', d.moving_average, t, v[:-1], 3)
 
+        # Input is unchanged
+        self.assertUnchanged(d.moving_average, np.arange(9), np.ones(9), 3)
+
     def test_window_size(self):
 
         # Window size checking
@@ -255,10 +264,14 @@ class SmoothingTest(unittest.TestCase):
         self.assertRaisesRegex(
             ValueError, 'Two window sizes', d.window_size, t, 3, 0.3)
 
+        # Input is unchanged
+        self.assertUnchanged(d.window_size, np.linspace(0, 5, 51), 3)
+
 
 if __name__ == '__main__':
     print('Add -v for more debug output')
     import sys
+    import unittest
     if '-v' in sys.argv:
         debug = True
     unittest.main()

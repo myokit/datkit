@@ -5,14 +5,13 @@
 # This file is part of Datkit.
 # For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
-import unittest
-
 import numpy as np
 
 import datkit as d
+import datkit.tests
 
 
-class CheckTimesTest(unittest.TestCase):
+class CheckTimesTest(datkit.tests.TestCase):
     """ Tests methods from the hidden _check_times module. """
 
     def test_is_increasing(self):
@@ -42,6 +41,10 @@ class CheckTimesTest(unittest.TestCase):
         x = [(0, 1), [1, 2]]
         self.assertRaisesRegex(ValueError, '1-d', d.is_increasing, x)
 
+        # Test if input is unchanged
+        self.assertUnchanged(d.is_increasing, np.linspace(0, 1, 101))
+        self.assertUnchanged(d.is_increasing, (5, 4, 3, 1))
+
     def test_is_regularly_increasing(self):
 
         x = np.linspace(0, 1, 101)
@@ -62,6 +65,10 @@ class CheckTimesTest(unittest.TestCase):
 
         self.assertTrue(d.is_regularly_increasing(-13 + np.arange(10) / 100))
 
+        # Test if input is unchanged
+        self.assertUnchanged(d.is_regularly_increasing, np.linspace(0, 1, 101))
+        self.assertUnchanged(d.is_regularly_increasing, np.geomspace(1, 2, 10))
+
     def test_sampling_interval(self):
 
         self.assertEqual(d.sampling_interval(np.arange(10)), 1)
@@ -72,7 +79,6 @@ class CheckTimesTest(unittest.TestCase):
         self.assertAlmostEqual(
             d.sampling_interval(-13 + np.arange(1000) / 100), 0.01)
         x = -13 + np.arange(1000) / 100
-        print(len(x))
 
         self.assertRaisesRegex(ValueError, 'two', d.sampling_interval, [])
         self.assertRaisesRegex(ValueError, 'two', d.sampling_interval, [0])
@@ -82,6 +88,10 @@ class CheckTimesTest(unittest.TestCase):
         x = [(0, 1), [1, 2]]
         self.assertRaisesRegex(ValueError, '1-d', d.sampling_interval, x)
 
+        # Test if input is unchanged
+        self.assertUnchanged(d.sampling_interval, np.linspace(0, 1, 10))
+
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()
