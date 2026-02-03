@@ -8,10 +8,16 @@ series data.
 
 Building only on numpy, they reliably let you do things like:
 
-- Find the indices corresponding to a start and end time
-- Perform some action (max, min, mean, etc) on that range
-- Check if a series is regularly spaced, or strictly non-decreasing
+- Find the indices strictly corresponding to a start and end time, or the
+  index closest to a given time
+- Perform some action (max, min, mean, absolute max etc) on a range
+- Check if a series is regularly spaced, or strictly non-decreasing, and
+  obtain the sampling time
 - Smooth using sliding windows, gaussian blur, and others
+- Get an amplitude or power spectrum of periodic data
+
+In short, things you can easily do with numpy, but without having to remember
+the syntax, and with unit tests for that particular operation.
 
 The code is tested on a recent version of Ubuntu & Python 3, but is so simple
 that it should work everywhere else too.
