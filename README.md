@@ -19,7 +19,8 @@ Building only on numpy, they reliably let you do things like:
 - Get an amplitude or power spectrum of periodic data
 
 In short, things you can easily do with numpy, but without having to remember
-the syntax, and with unit tests for that particular operation.
+the syntax, and with unit tests for that particular operation. For a full
+overview, see [the docs](https://datkit.readthedocs.io/).
 
 The code is tested on a recent version of Ubuntu & Python 3, but is so simple
 that it should work everywhere else too.
