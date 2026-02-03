@@ -6,6 +6,13 @@
 This module contains some simple methods that are useful when analysing time 
 series data.
 
+Building only on numpy, they reliably let you do things like:
+
+- Find the indices corresponding to a start and end time
+- Perform some action (max, min, mean, etc) on that range
+- Check if a series is regularly spaced, or strictly non-decreasing
+- Smooth using sliding windows, gaussian blur, and others
+
 The code is tested on a recent version of Ubuntu & Python 3, but is so simple
 that it should work everywhere else too.
 
