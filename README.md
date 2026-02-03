@@ -4,7 +4,7 @@
 # Datkit
 
 This module contains some simple methods that are useful when analysing time 
-series data.
+series data (as arrays `time` and `values`).
 
 Building only on numpy, they reliably let you do things like:
 
