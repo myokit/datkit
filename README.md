@@ -8,8 +8,8 @@ series data.
 
 Building only on numpy, they reliably let you do things like:
 
-- Find the indices strictly corresponding to a start and end time, or the
-  index closest to a given time
+- Find the indices strictly corresponding to a point, or the start and end
+  time of a range (including end points, half-open, etc)
 - Find the index closest to a point _not_ appearing in the data, and
   interpolate the value at that point.
 - Perform some action (max, min, mean, absolute max etc) on a range
