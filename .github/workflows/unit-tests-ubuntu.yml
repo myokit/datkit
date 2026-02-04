@@ -16,7 +16,8 @@ jobs:
     if: github.event.pull_request.draft == false
     strategy:
       matrix:
-        python-version: ['3.8', '3.14']
+        # Test oldest. Latest is tested by coverage
+        python-version: ['3.8']
 
     steps:
       - uses: actions/checkout@v4
