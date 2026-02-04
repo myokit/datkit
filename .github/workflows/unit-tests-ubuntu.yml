@@ -16,6 +16,7 @@ jobs:
     if: github.event.pull_request.draft == false
     strategy:
       matrix:
+        # Test oldest. Latest is tested by coverage
         python-version: ['3.8']
 
     steps:
