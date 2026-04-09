@@ -23,22 +23,6 @@ from ._datkit_version import (  # noqa
 
 
 #
-# Paths
-#
-
-# Datkit root
-import os, inspect  # noqa
-try:
-    frame = inspect.currentframe()
-    DIR_DATKIT = os.path.abspath(os.path.dirname(inspect.getfile(frame)))
-finally:
-    # Always manually delete frame
-    # https://docs.python.org/3/library/inspect.html
-    del frame
-del os, inspect
-
-
-#
 # Imports
 #
 from ._check_times import (  # noqa

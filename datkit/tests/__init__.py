@@ -5,11 +5,7 @@
 # This file is part of Datkit.
 # For copyright, sharing, and licensing, see https://github.com/myokit/datkit/
 #
-import os
 import unittest
-
-# The test directory
-DIR_TEST = os.path.abspath(os.path.dirname(__file__))
 
 
 class TestCase(unittest.TestCase):
@@ -55,4 +51,4 @@ class TestCase(unittest.TestCase):
         self.assertTrue(self.array_args_unchanged(func, *args))
 
 
-del os, unittest
+del unittest
