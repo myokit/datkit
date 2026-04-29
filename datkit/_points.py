@@ -28,6 +28,9 @@ def data_on(times, values, t0=None, t1=None, include_left=True,
     Returns a tuple ``(times2, values2)`` corresponding to the interval from
     ``t0`` to ``t1`` in ``times``.
 
+    The returned arrays are (almost always) *views*: Modifying them will modify
+    the original data.
+
     See also :meth:`index_on`.
     """
     i, j = index_on(times, t0, t1, include_left, include_right)
